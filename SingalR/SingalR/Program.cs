@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SingalR.Data;
 using SingalR.Hubs;
+using SingalR.MiddlewareExtensions;
+using SingalR.Repositories;
+using SingalR.SubscribeTableDependencies;
 
 namespace SingalR
 {
@@ -13,14 +16,20 @@ namespace SingalR
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            builder.Services.AddDbContext<ApplicationDbContext>(options => 
+            {
+                options.UseSqlServer(connectionString);
+            }, ServiceLifetime.Singleton);
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddSingleton<IProductRepository, ProductRepository>();
+            builder.Services.AddSingleton<DashboardHub>();
+            builder.Services.AddSingleton<SubscribeProductTableDependency>();
             builder.Services.AddControllersWithViews();
             builder.Services.AddSignalR();
+
 
             var app = builder.Build();
 
@@ -47,6 +56,9 @@ namespace SingalR
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Dashboard}/{action=Index}/{id?}");
+
+            app!.UseProductTableDependency(connectionString);
+
             app.MapRazorPages();
 
             app.MapHub<DashboardHub>("/dashboardHub");
