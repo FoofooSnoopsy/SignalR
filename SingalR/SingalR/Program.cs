@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SingalR.Data;
+using SingalR.Hubs;
 
 namespace SingalR
 {
@@ -19,6 +20,7 @@ namespace SingalR
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
+            builder.Services.AddSignalR();
 
             var app = builder.Build();
 
@@ -41,10 +43,14 @@ namespace SingalR
 
             app.UseAuthorization();
 
+
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Dashboard}/{action=Index}/{id?}");
             app.MapRazorPages();
+
+            app.MapHub<DashboardHub>("/dashboardHub");
+
 
             app.Run();
         }
