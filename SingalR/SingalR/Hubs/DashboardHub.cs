@@ -15,6 +15,9 @@ namespace SingalR.Hubs
         {
             var products = await _productRepository.GetProducts();
             await Clients.All.SendAsync("ReceivedProducts", products);
+
+            var graphData = await _productRepository.GetProductGraphData();
+            await Clients.All.SendAsync("ReceivedProductsGraphData", graphData);
         }
     }
 }

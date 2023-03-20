@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SingalR.Data;
 using SingalR.Models;
+using SingalR.Models.ViewModels;
 
 namespace SingalR.Repositories
 {
@@ -15,12 +16,27 @@ namespace SingalR.Repositories
 
         public async Task<IEnumerable<Product>> GetProducts()
         {
-            return await _db.Product.ToListAsync();
+            return await _db.Product.AsNoTracking().ToListAsync();
         }
 
         public Task<Product> GetProductDetails(int ProductId)
         {
             return _db.Product.FirstOrDefaultAsync(p => p.Id == ProductId)!;
+        }
+
+        public async Task<List<ProductGraphData>> GetProductGraphData()
+        {
+            var category = await _db.Product.GroupBy(p => p.Category).Select(p => new
+            {
+                Category = p.Key,
+                Count = p.Count()
+            }).OrderBy(p => p.Count).ToListAsync();
+
+            return category.Select(item => new ProductGraphData
+            {
+                Category = item.Category,
+                Count = item.Count
+            }).ToList();
         }
     }
 }
