@@ -7,6 +7,7 @@ namespace SingalR.SubscribeTableDependencies
     public class SubscribeProductTableDependency:ISubsribeTableDependency
     {
         SqlTableDependency<Product> _tableDependency;
+        SqlTableDependency<Sale> _tableDependencySale;
         DashboardHub _dashboardHub;
         IConfiguration _cofiguration;
 
@@ -18,12 +19,17 @@ namespace SingalR.SubscribeTableDependencies
 
         public void SubscribeTableDependency(string connectionString)
         {
-            _tableDependency = new SqlTableDependency<Product>(connectionString);
-            _tableDependency.OnChanged += TableDependency_Onchanged;
-            _tableDependency.OnError += TableDependency_OnError;
-            _tableDependency.Start();
-        }
+            var productDependency = new SqlTableDependency<Product>(connectionString);
+            var saleDependency = new SqlTableDependency<Sale>(connectionString);
 
+            productDependency.OnChanged += TableDependency_Onchanged;
+            productDependency.OnError += TableDependency_OnError;
+            productDependency.Start();
+
+            saleDependency.OnChanged += TableDependency_OnchangedSale;
+            saleDependency.OnError += TableDependency_OnErrorSale;
+            saleDependency.Start();
+        }
         private void TableDependency_OnError(object sender, TableDependency.SqlClient.Base.EventArgs.ErrorEventArgs e)
         {
             Console.WriteLine($"{nameof(Product)} SqlTableDependency error: {e.Error.Message}");
@@ -34,6 +40,19 @@ namespace SingalR.SubscribeTableDependencies
             if (e.ChangeType != TableDependency.SqlClient.Base.Enums.ChangeType.None)
             {
                 _dashboardHub.SendProducts();
+            }
+        }
+
+        private void TableDependency_OnErrorSale(object sender, TableDependency.SqlClient.Base.EventArgs.ErrorEventArgs e)
+        {
+            Console.WriteLine($"{nameof(Sale)} SqlTableDependency error: {e.Error.Message}");
+        }
+
+        private void TableDependency_OnchangedSale(object sender, TableDependency.SqlClient.Base.EventArgs.RecordChangedEventArgs<Sale> e)
+        {
+            if (e.ChangeType != TableDependency.SqlClient.Base.Enums.ChangeType.None)
+            {
+                _dashboardHub.SendSales();
             }
         }
     }
