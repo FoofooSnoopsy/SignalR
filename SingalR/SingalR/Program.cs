@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using SingalR.Data;
 using SingalR.Hubs;
 using SingalR.MiddlewareExtensions;
+using SingalR.Models;
+using SingalR.Models.ViewModels;
 using SingalR.Repositories;
 using SingalR.SubscribeTableDependencies;
 
@@ -24,9 +26,16 @@ namespace SingalR
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.Services.AddSingleton<IProductRepository, ProductRepository>();
+
             builder.Services.AddSingleton<DashboardHub>();
             builder.Services.AddSingleton<SubscribeProductTableDependency>();
+
+            builder.Services.AddSingleton<ProductRepository>();
+            builder.Services.AddSingleton<SaleRepository>();
+            builder.Services.AddSingleton<CustomerRepository>();
+
+
+
             builder.Services.AddControllersWithViews();
             builder.Services.AddSignalR();
 

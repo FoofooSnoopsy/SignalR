@@ -5,7 +5,7 @@ using SingalR.Models.ViewModels;
 
 namespace SingalR.Repositories
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : IRepository<Product, ProductGraphData>
     {
         public readonly ApplicationDbContext _db;
 
@@ -14,29 +14,36 @@ namespace SingalR.Repositories
             _db = db;
         }
 
-        public async Task<IEnumerable<Product>> GetProducts()
+        public async Task<IEnumerable<Product>> GetList()
         {
             return await _db.Product.AsNoTracking().ToListAsync();
         }
 
-        public Task<Product> GetProductDetails(int ProductId)
+        public Task<Product> GetFromId(int ProductId)
         {
             return _db.Product.FirstOrDefaultAsync(p => p.Id == ProductId)!;
         }
 
-        public async Task<List<ProductGraphData>> GetProductGraphData()
+        public async Task<List<ProductGraphData>> GetGraphData()
         {
-            var category = await _db.Product.GroupBy(p => p.Category).Select(p => new
-            {
-                Category = p.Key,
-                Count = p.Count()
-            }).OrderBy(p => p.Count).ToListAsync();
+            var category = await _db.Product
+                .AsNoTracking()
+                .GroupBy(p => p.Category)
+                .Select(p => new
+                    {
+                        Category = p.Key,
+                        Count = p.Count()
+                    })
+                .OrderBy(p => p.Count)
+                .ToListAsync();
 
-            return category.Select(item => new ProductGraphData
-            {
-                Category = item.Category,
-                Count = item.Count
-            }).ToList();
+            return category
+                .Select(item => new ProductGraphData
+                {
+                    Category = item.Category,
+                    Count = item.Count
+                })
+                .ToList();
         }
     }
 }

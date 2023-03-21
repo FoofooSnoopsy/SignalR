@@ -5,7 +5,8 @@
 <h1>Dashboard</h1>
 <div>
     <div class="row">
-        <div class="col-md-4">
+
+        <div class="col-md-6">
             <div class="x_panel">
                 <div class="x_title">
                     <h4>Products</h4>
@@ -27,8 +28,58 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-md-6">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h4>Sales</h4>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <table class="table table-hover" id="tblSales">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Customer</th>
+                                <th>product</th>
+                                <th>Amount</th>
+                                <th>PurchasedOn</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h4>Customers</h4>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <table class="table table-hover" id="tblCustomers">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Gender</th>
+                                <th>Mobile, want wie boeit de avg nou</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
     <div class="row">
+
+
         <div class="col-md-4">
             <div class="x_panel canvas">
                 <div class="x_title">
@@ -40,6 +91,31 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="x_panel canvas">
+                <div class="x_title">
+                    <h4>Sales per Dat</h4>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <canvas id="canvasSales" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="x_panel canvas">
+                <div class="x_title">
+                    <h4>Customers per Gendder</h4>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <canvas id="canvasCustomers" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 @section Scripts{
