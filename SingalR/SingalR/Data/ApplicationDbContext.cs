@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SingalR.Models;
 
 namespace SingalR.Data
 {
@@ -9,5 +10,13 @@ namespace SingalR.Data
             : base(options)
         {
         }
+
+        public DbSet<Customer> Customer { get; set; }
+
+        public DbSet<Sale> Sale { get; set; }
+
+        public DbSet<Product> Product { get; set; }
+
+
     }
 }
