@@ -27,17 +27,15 @@ namespace SingalR.Repositories
 
         public async Task<List<CustomerGraphData>> GetItemGraphData()
         {
-            var category = await _db.Product.GroupBy(p => p.Category).Select(p => new
-            {
-                Category = p.Key,
-                Count = p.Count()
-            }).OrderBy(p => p.Count).ToListAsync();
-
-            return category.Select(item => new CustomerGraphData
-            {
-                Category = item.Category,
-                Count = item.Count
-            }).ToList();
+            return _db.Customer
+             .AsNoTracking()
+             .GroupBy(s => s.Gender)
+             .Select(g => new CustomerGraphData
+             {
+                 Gender = g.Key,
+                 Count = g.Count(),
+             })
+             .ToList();
         }
     }
 }

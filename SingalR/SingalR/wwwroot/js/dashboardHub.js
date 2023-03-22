@@ -33,7 +33,8 @@ connection.on("ReceivedCustomers", function (customers) {
 });
 
 connection.on("ReceivedCustomersGraphData", function (customerGraphData) {
-    BindCustomersToGraph(customerGraphData);
+    console.log(customerGraphData)
+    BindCustomerToGraph(customerGraphData);
 });
 
 function InvokeProducts() {
@@ -107,7 +108,6 @@ function BindProductsToGraph(productForGraph) {
 
 
     const context = $('#canvasProducts');
-    console.log("hier");
     new Chart(context, {
         type: 'doughnut',
         data: {
@@ -132,8 +132,8 @@ function BindSalesToGraph(salesForGraph) {
     var labels = [];
     var data = [];
     $.each(salesForGraph, function (index, sale) {
-        labels.push(sale.purchasedOn);
-        data.push(sale.amount);
+        labels.push(sale.day);
+        data.push(sale.count);
     });
 
     DestroyCanvasIfExists('canvasSales');
@@ -148,6 +148,44 @@ function BindSalesToGraph(salesForGraph) {
                 data: data,
                 backgroundColor: 'rgba(245, 39, 63,0.3)',
                 borderColor: '#454445',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
+
+function BindCustomerToGraph(customersForGraph) {
+    var labels = [];
+    var data = [];
+    $.each(customersForGraph, function (index, customer) {
+        labels.push(customer.gender);
+        data.push(customer.count);
+    });
+
+    DestroyCanvasIfExists('canvasCustomers');
+    for (var i = 0; i < data.length; i++) {
+        backgroundColors.push(getRandomColor());
+    }
+
+    const context = $('#canvasCustomers');
+    new Chart(context, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Genders',
+                data: data,
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
                 borderWidth: 1
             }]
         },

@@ -2,7 +2,7 @@
 {
     public class CustomerGraphData
     {
-        public string Category { get; set; } = string.Empty;
+        public string? Gender { get; set; }
 
         public int Count { get; set; }
     }

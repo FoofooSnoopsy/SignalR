@@ -11,7 +11,6 @@ namespace SingalR.Hubs
         private readonly IRepository<Product, ProductGraphData> _productRepository;
         private readonly IRepository<Sale, SaleGraphData> _saleRepository;
         private readonly IRepository<Customer, CustomerGraphData> _customerRepository;
-        //private readonly IRepository<Product, ProductGraphData> _productRepository;
         public DashboardHub(
             IRepository<Product, ProductGraphData> productRepository,
             IRepository<Sale, SaleGraphData> saleRepository,
@@ -41,11 +40,11 @@ namespace SingalR.Hubs
 
         public async Task SendCustomers()
         {
-            var sales = await _saleRepository.GetItems();
-            await Clients.All.SendAsync("ReceivedCustomers", sales);
+            var customers = await _customerRepository.GetItems();
+            await Clients.All.SendAsync("ReceivedCustomers", customers);
 
-            var saleGraphData = await _saleRepository.GetItemGraphData();
-            await Clients.All.SendAsync("ReceivedCustomersGraphData", saleGraphData);
+            var customerGraphData = await _customerRepository.GetItemGraphData();
+            await Clients.All.SendAsync("ReceivedCustomersGraphData", customerGraphData);
         }
 
     }

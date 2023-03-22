@@ -2,6 +2,7 @@
 using SingalR.Models.ViewModels;
 using SingalR.Models;
 using Microsoft.EntityFrameworkCore;
+using Nest;
 
 namespace SingalR.Repositories
 {
@@ -27,19 +28,16 @@ namespace SingalR.Repositories
 
         public async Task<List<SaleGraphData>> GetItemGraphData()
         {
-            var category = await _db.Product.GroupBy(p => p.Category).Select(p => new
+            return _db.Sale
+            .AsNoTracking()
+            .GroupBy(s => s.PurchasedOn)
+            .Select(g => new SaleGraphData
             {
-                Category = p.Key,
-                Count = p.Count()
-            }).OrderBy(p => p.Count).ToListAsync();
-
-            return category.Select(item => new SaleGraphData
-            {
-                Category = item.Category,
-                Count = item.Count
-            }).ToList();
+                Day = g.Key,
+                Count = g.Count(),
+            })
+            .ToList();
         }
-
 
     }
 }
