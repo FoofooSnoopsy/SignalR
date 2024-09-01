@@ -5,7 +5,7 @@ using SingalR.Models.ViewModels;
 
 namespace SingalR.Repositories
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : IRepository<Product, ProductGraphData>
     {
         public readonly ApplicationDbContext _db;
 
@@ -14,17 +14,12 @@ namespace SingalR.Repositories
             _db = db;
         }
 
-        public async Task<IEnumerable<Product>> GetProducts()
+        public async Task<IEnumerable<Product>> GetItems()
         {
             return await _db.Product.AsNoTracking().ToListAsync();
         }
 
-        public Task<Product> GetProductDetails(int ProductId)
-        {
-            return _db.Product.FirstOrDefaultAsync(p => p.Id == ProductId)!;
-        }
-
-        public async Task<List<ProductGraphData>> GetProductGraphData()
+        public async Task<List<ProductGraphData>> GetItemGraphData()
         {
             var category = await _db.Product.GroupBy(p => p.Category).Select(p => new
             {
@@ -37,6 +32,11 @@ namespace SingalR.Repositories
                 Category = item.Category,
                 Count = item.Count
             }).ToList();
+        }
+
+        public Task<Product> GetItemDetails(int itemId)
+        {
+            return _db.Product.FirstOrDefaultAsync(p => p.Id == itemId)!;
         }
     }
 }
